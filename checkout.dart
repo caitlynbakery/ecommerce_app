@@ -20,7 +20,7 @@ class Item {
   double get price => quantity * product.price;
 
   @override
-  String toString() => '$quantity x ${product.name}: \$price';
+  String toString() => '$quantity x ${product.name}: \$$price';
 }
 
 class Cart {
@@ -29,13 +29,15 @@ class Cart {
   void addProduct(Product product) {
     final item = _items[product.id];
     if (item == null){
-      _items[product.id] = Item(product: product);
+      _items[product.id] = Item(product: product, quantity: 1);
     } else {
       _items[product.id] = Item(product: product, quantity: item.quantity + 1);
     }
   }
 
-  double total() => _items.values.map((item) => item.price).reduce((value, element) => null)
+  bool get isEmpty => _items.isEmpty;
+
+  double total() => _items.values.map((item) => item.price).reduce((value, element) => value + element);
 
   @override
   String toString() {
@@ -44,6 +46,7 @@ class Cart {
     }
     final itemizedList = 
     _items.values.map((item) => item.toString()).join('\n');
+    return '------\n$itemizedList\nTotal: \$${total()}\n------';
   }
 }
 
@@ -57,6 +60,7 @@ const allProducts = [
 ];
 
 void main() {
+  final cart = Cart();
   while (true) {
     stdout.write(
       'What do you want to do? (v)iew items, (a)dd item, (c)heckout: '
@@ -66,10 +70,11 @@ void main() {
     if (line == 'a'){
       final product = chooseProduct();
       if(product != null){
-        print(product.displayName);
+        cart.addProduct(product);
+        print(cart);
       }
     } else if (line == 'v'){
-      //TODO
+      print(cart);
     } else if (line == 'c'){
       //TODO
     }
@@ -89,4 +94,19 @@ Product? chooseProduct() {
   }
   print('Not found');
   return null;
+}
+
+bool checkout(Cart cart) {
+  if(cart.isEmpty){
+    print("Cart is empty");
+    return false;
+  }
+  final total = cart.total();
+  print('Total: \$$total');
+  stdout.write('Payment in cash: ');
+  final line = stdin.readLineSync();
+  if(line == null || line.isEmpty) {
+    return false;
+  }
+  final paid = double.tryParse(line);
 }
