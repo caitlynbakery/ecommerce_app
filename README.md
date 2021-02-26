@@ -51,3 +51,18 @@ var newNumber = numbers.reduce(function (accumulator, currentNumber) {
 
 //output: 114
 ```
+
+In my cart.dart file, I use the map and reduce functions to output the total
+of all the prices. I first map the values of my Map called _items and return
+a list of the prices. Then I reduce my prices list by adding all the elements
+together and returning a single value.
+
+```dart
+double total() => _items.values.map((item) => item.price).reduce((value, element) => value + element);
+```
+
+## Project Structure
+
+I separated my files into two folders called `bin` and `lib`. The bin folder holds `main.dart`
+which runs the `main` method and is the starting point for my program. The `lib` folder holds
+the other dart files which are separated by class.
